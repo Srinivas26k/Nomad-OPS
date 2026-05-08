@@ -586,13 +586,14 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outl
   background: var(--bg-surface);
   border-left: 1px solid var(--border);
   overflow-y: auto;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
-.detail-panel::-webkit-scrollbar { display: none; }
+.detail-panel::-webkit-scrollbar { width: 4px; }
+.detail-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
 
 .operator-card {
   display: flex;
@@ -691,7 +692,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outl
 
 /* ── Decision feed ──────────────────────────────────────────────────────── */
 .decision-feed {
-  max-height: 240px;
+  min-height: 180px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #e2e8f0 transparent;
@@ -830,6 +831,232 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outl
   color: var(--text-secondary);
   z-index: 20;
 }
+
+/* ── Decision feed extras ───────────────────────────────────────────────── */
+.decision-feed { flex: 1; overflow-y: auto; }
+.feed-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 999px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-soft);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+.decision-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+.sev-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.geocoding-badge { color: var(--blue); font-style: italic; }
+.chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Tab views (shared) ─────────────────────────────────────────────────── */
+.tab-view {
+  grid-column: 1 / -1;
+  overflow-y: auto;
+  padding: 28px 32px;
+  scrollbar-width: thin;
+}
+.view-title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+.view-subtitle {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  color: var(--text-primary);
+}
+.view-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+/* ── Overview view ──────────────────────────────────────────────────────── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.metric-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+}
+.metric-card-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.metric-card-value {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.metric-card-sub { font-size: 11px; color: var(--text-secondary); }
+
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.agent-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  transition: border-color 120ms, box-shadow 120ms;
+}
+.agent-card.active { border-color: rgba(34,197,94,0.4); box-shadow: 0 0 0 3px rgba(34,197,94,0.08); }
+.agent-card.clickable:hover { border-color: #c4cdd9; box-shadow: 0 2px 10px rgba(15,23,42,0.08); }
+.agent-card.clickable.selected { border-color: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,0.12); }
+.agent-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.agent-card-name { font-size: 13px; font-weight: 700; }
+.agent-card-role { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+.agent-card-task { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+.agent-card-meta { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); }
+.agent-card-meta b { color: var(--text-primary); font-weight: 700; }
+.run-pill {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.run-pill.running { background: #f0fdf4; color: #15803d; border: 1px solid rgba(34,197,94,0.25); }
+.run-pill.done    { background: var(--bg-base); color: var(--text-muted); border: 1px solid var(--border-soft); }
+
+/* ── Strategy view ──────────────────────────────────────────────────────── */
+.strategy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.strategy-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+.strategy-card.wide { grid-column: 1 / -1; }
+.strategy-card-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.route-stops { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.route-stop-row { display: flex; align-items: center; gap: 10px; }
+.stop-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.stop-name { font-size: 13px; font-weight: 700; }
+.stop-coords { font-size: 10px; color: var(--text-muted); font-family: "JetBrains Mono", ui-monospace, monospace; margin-top: 1px; }
+.stop-kind { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.route-meta { display: flex; gap: 20px; font-size: 12px; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border-soft); }
+.route-meta b { color: var(--text-primary); font-weight: 700; }
+.strategy-hint { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+.scenario-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.scenario-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  text-align: left;
+  transition: all 120ms;
+}
+.scenario-btn:hover { border-color: #c4cdd9; background: #f7f9fb; box-shadow: 0 2px 8px rgba(15,23,42,0.06); }
+.scenario-label { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.scenario-desc  { font-size: 11px; color: var(--text-secondary); line-height: 1.35; }
+
+/* ── Agents view ────────────────────────────────────────────────────────── */
+.agents-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
+}
+.agents-detail {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  position: sticky;
+  top: 0;
+}
+
+/* ── Team activity view ─────────────────────────────────────────────────── */
+.team-view .full-feed.wide { max-width: 800px; }
+.activity-row { display: flex; gap: 12px; }
+.activity-sev {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-top: 2px;
+}
+.activity-body { flex: 1; min-width: 0; }
+
+/* ── Full feed (shared) ─────────────────────────────────────────────────── */
+.full-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.full-feed .decision { animation: none; }
+
+/* ── Placeholder view ───────────────────────────────────────────────────── */
+.placeholder-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-muted);
+}
+.placeholder-icon { opacity: 0.3; }
+.placeholder-label { font-size: 18px; font-weight: 700; color: var(--text-secondary); }
+.placeholder-sub { font-size: 13px; color: var(--text-muted); text-align: center; max-width: 360px; line-height: 1.5; }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
