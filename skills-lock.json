@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/brainstorming/SKILL.md",
+      "computedHash": "8df9b47092524833138b58682d03f2e153a242e550d1693657afdbee0cc9cdb0"
+    },
+    "cloud-run-basics": {
+      "source": "google/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cloud/cloud-run-basics/SKILL.md",
+      "computedHash": "bc11572a238ce911487c58f2f6ebbb947525fd1a69514a44842c904af6fce319"
+    },
+    "firebase-basics": {
+      "source": "google/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cloud/firebase-basics/SKILL.md",
+      "computedHash": "cd410eb41f3f0c32aeb2b31ac3f665d54c700d3f40b8ec18f3e571e9687b0f13"
+    },
+    "gemini-api": {
+      "source": "google/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cloud/gemini-api/SKILL.md",
+      "computedHash": "c8cd9e6bd860dcfeb65b6d8a3efaab8b6d93ea7ad666d24d1f4f04c7e34e116b"
+    },
+    "google-cloud-waf-security": {
+      "source": "google/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cloud/google-cloud-waf-security/SKILL.md",
+      "computedHash": "f043ada8752152cb3ce4fc903f665552406fefb18ef3c0178839275feb9fdd5c"
+    }
+  }
+}
