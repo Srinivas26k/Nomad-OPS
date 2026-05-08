@@ -42,7 +42,12 @@ This TRD defines the complete engineering specification for NOMAD OPS — an aut
 | **Presentation** | Next.js 14 + TailwindCSS + Framer Motion | Travel Command Center UI, map rendering, chat input |
 | **Orchestration** | Google ADK (Python SDK) + Cloud Functions Gen 2 | Multi-agent pipeline, event routing, conflict resolution |
 | **AI Reasoning** | Gemini 1.5 Pro via ADK `LlmAgent` | Decision-making, NLU, plan generation |
-| **Data / Realtime** | Firebase Realtime DB + Firestore + GCS | State sync, decision feed, session storage |
+| **Data / Realtime** | Firebase Realtime DB + Firestore | State sync, decision feed, session storage |
+| **Maps** | MapLibre GL JS + OpenStreetMap (OpenFreeMap dark tiles) | Vector map rendering, dark custom style — **no API key** |
+| **Routing** | OSRM (public API) + GraphHopper Free Tier | Route calculation, polylines, ETAs — **free** |
+| **Geocoding** | Nominatim (OSM) | Destination search, coordinate resolution — **free** |
+| **POIs** | Overpass API (OSM) | Nearby places, categories, ratings — **free** |
+| **Weather** | Open-Meteo API | 15-min forecast, rain probability — **free, no key** |
 
 ### 2.2 ADK Agent Topology
 
@@ -111,7 +116,8 @@ Next.js UI re-renders map + panels
 | Next.js | 14.x (App Router) | SSR framework, API routes |
 | TailwindCSS | 3.x | Utility-first styling |
 | Framer Motion | 11.x | Route animation, rerouting pulse |
-| `@vis.gl/react-google-maps` | 1.x | Google Maps React integration |
+| `maplibre-gl` | 4.x | Vector map rendering (OpenStreetMap tiles, no API key) |
+| `react-map-gl` | 7.x (MapLibre adapter) | React wrapper for MapLibre GL |
 | Firebase JS SDK | 10.x | Realtime DB listener, Firestore, Auth |
 | Zustand | 4.x | Global state: session, constraints, feed |
 | Recharts | 2.x | Budget sparklines, crowd charts |
@@ -125,18 +131,20 @@ Next.js UI re-renders map + panels
 | Gemini Model | `gemini-1.5-pro-latest` | All `LlmAgent` reasoning |
 | Session State | Firestore doc per `session_id` | Agent context persisted |
 | Real-time Push | Firebase Realtime DB | Decision feed to UI |
-| Secrets | Google Secret Manager | API keys at runtime |
+| Secrets | Google Secret Manager | Gemini API key only |
 
-### 3.3 APIs & External Services
+### 3.3 APIs & External Services (All Free / No Key Required)
 
 | API | Provider | Usage | Auth |
 |-----|---------|-------|------|
 | Gemini 1.5 Pro | Google AI | All agent LLM calls | API Key (Secret Manager) |
-| Maps JavaScript API | Google Maps | Map rendering, overlays | API Key (HTTP-restricted) |
-| Directions API | Google Maps | Route calculation, polylines | API Key |
-| Places API (New) | Google Maps | POI search, ratings | API Key |
-| Distance Matrix API | Google Maps | Multi-stop ETA | API Key |
-| Open-Meteo API | Open-Meteo | Free weather data (15-min) | None (free tier) |
+| OpenFreeMap Dark Tiles | openfreemap.org | Vector map tiles (dark style) | **None — free** |
+| MapLibre GL JS | maplibre.org | Client-side map rendering | **None — open source** |
+| OSRM Routing API | router.project-osrm.org | Route polylines, ETA, turn-by-turn | **None — free** |
+| GraphHopper API | graphhopper.com | Alternative route calculation | Free tier (2,500 req/day) |
+| Nominatim Geocoding | nominatim.openstreetmap.org | Destination → coordinates | **None — free** |
+| Overpass API | overpass-api.de | POI search, nearby places | **None — free** |
+| Open-Meteo API | open-meteo.com | Weather forecast, rain probability | **None — free, no key** |
 | Firebase Realtime DB | Google Firebase | Decision feed streaming | Service Account |
 | Firestore | Google Firebase | Session & agent state | Service Account |
 | Firebase Auth | Google Firebase | Anonymous session tokens | Client SDK |
@@ -209,16 +217,17 @@ routing_agent = LlmAgent(
 
 ### 4.4 Agent Tool Contracts
 
-| Agent | Tool | Input | Output |
-|-------|------|-------|--------|
-| `RoutingAgent` | `calculate_route` | `{origin, destination, waypoints[], mood}` | `{polyline, eta_minutes, distance_km, risk_score}` |
-| `RoutingAgent` | `get_alternative_routes` | `{origin, destination, constraints}` | `{routes[]: {polyline, eta, cost_estimate}}` |
-| `BudgetAgent` | `check_budget_impact` | `{route_id, activities[], group_size}` | `{remaining, spend_breakdown, alert_level}` |
-| `WeatherAgent` | `get_weather_risk` | `{lat, lng, window_hours}` | `{rain_prob, risk_level, recommendation}` |
-| `ExperienceAgent` | `rank_pois` | `{location, mood, budget_tier, crowd_max}` | `{pois[]: {name, score, category, coords}}` |
-| `SocialAgent` | `negotiate_preferences` | `{user_preferences[]}` | `{merged_mood, compromise_score, hybrid_plan}` |
-| `RecoveryAgent` | `execute_recovery` | `{disruption_type, current_state}` | `{new_route, explanation, savings}` |
-| `ExplainabilityAgent` | `log_decision` | `{agent, trigger, action, outcome}` | `{decision_id, timestamp, feed_entry}` |
+| Agent | Tool | Input | Output | API Used |
+|-------|------|-------|--------|----------|
+| `RoutingAgent` | `calculate_route` | `{origin, destination, waypoints[], mood}` | `{polyline, eta_minutes, distance_km, risk_score}` | **OSRM** |
+| `RoutingAgent` | `get_alternative_routes` | `{origin, destination, constraints}` | `{routes[]: {polyline, eta, cost_estimate}}` | **GraphHopper Free** |
+| `RoutingAgent` | `geocode_location` | `{place_name: string}` | `{lat, lng, display_name}` | **Nominatim** |
+| `BudgetAgent` | `check_budget_impact` | `{route_id, activities[], group_size}` | `{remaining, spend_breakdown, alert_level}` | Internal |
+| `WeatherAgent` | `get_weather_risk` | `{lat, lng, window_hours}` | `{rain_prob, risk_level, recommendation}` | **Open-Meteo** |
+| `ExperienceAgent` | `rank_pois` | `{location, mood, budget_tier, crowd_max}` | `{pois[]: {name, score, category, coords}}` | **Overpass API** |
+| `SocialAgent` | `negotiate_preferences` | `{user_preferences[]}` | `{merged_mood, compromise_score, hybrid_plan}` | Gemini reasoning |
+| `RecoveryAgent` | `execute_recovery` | `{disruption_type, current_state}` | `{new_route, explanation, savings}` | OSRM + Gemini |
+| `ExplainabilityAgent` | `log_decision` | `{agent, trigger, action, outcome}` | `{decision_id, timestamp, feed_entry}` | Firebase write |
 
 ### 4.5 Session State Schema
 
@@ -302,16 +311,17 @@ interface DecisionEntry {
 
 ### 5.2 Map Component Specification
 
-| Feature | Implementation | Maps API |
-|---------|---------------|---------|
-| Base map | Custom dark JSON style via `mapId` | Maps JavaScript API |
-| Active route | `google.maps.Polyline`; animated `strokeDashoffset` on reroute | Directions API polyline |
-| Alt routes | Dashed Polylines, lower opacity; click to adopt | Directions API `alternatives: true` |
-| POI markers | `AdvancedMarkerElement` with category SVG icons | Places API `place_id` |
-| Traffic | `google.maps.TrafficLayer` | Maps JS built-in |
-| Crowd heat | `HeatmapLayer` weighted by `crowd_density` score | Maps JS Visualization |
-| Reroute animation | Framer Motion path draw + pulse flash | Client-side only |
-| Weather overlay | Circle overlay at risk coordinates | Client + WeatherAgent data |
+| Feature | Implementation | API / Library |
+|---------|---------------|---------------|
+| Base map | MapLibre GL JS + OpenFreeMap dark vector tiles | **openfreemap.org** (no key) |
+| Dark style | `https://tiles.openfreemap.org/styles/dark` JSON style | OpenFreeMap |
+| Active route | MapLibre `GeoJSON` LineLayer; `line-dasharray` animation on reroute | **OSRM** polyline decoded |
+| Alt routes | Dashed LineLayer, lower opacity; click to adopt | **GraphHopper** alternatives |
+| POI markers | MapLibre `Symbol` layer with category SVG icons | **Overpass API** nodes |
+| Traffic | Mock data overlay (colored LineLayer on top of route) | Mock JSON |
+| Crowd heat | MapLibre `HeatmapLayer` weighted by `crowd_density` | Client-side mock data |
+| Reroute animation | Framer Motion `pathLength` + MapLibre layer swap | Client-side |
+| Weather overlay | MapLibre `CircleLayer` at risk coordinates | **Open-Meteo** data |
 
 ### 5.3 Constraint Panel — Live Indicators
 
@@ -432,13 +442,14 @@ Demo-only endpoint for hackathon event injection:
 
 | Requirement | Implementation | Priority |
 |-------------|---------------|----------|
-| API Key Protection | All keys in Google Secret Manager; never in client bundle | CRITICAL |
+| API Key Protection | Gemini key only — in Google Secret Manager; never in client bundle | CRITICAL |
 | Firebase Auth | Anonymous auth for session | HIGH |
 | CORS Policy | Cloud Functions: allow only verified Next.js origin | HIGH |
 | Input Sanitization | Zod schema validation on all API route inputs | HIGH |
 | ADK Tool Safety | Tool output validated before Firestore write | MEDIUM |
-| Map API Restriction | HTTP referrer restriction on Maps API key | HIGH |
+| Nominatim / OSRM Usage | Respect rate limits: max 1 req/sec (Nominatim ToS) | HIGH |
 | Rate Limiting | 100 req/min/session via Firebase token check | MEDIUM |
+| No Paid Keys | Zero Google Maps, Zero Mapbox — fully OSS stack | CRITICAL |
 
 ---
 
