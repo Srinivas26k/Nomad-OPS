@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, Badge, Button, Chip, Input, Progress } from "@heroui/react";
-import { FormEvent, useMemo, useState } from "react";
+import type { ButtonHTMLAttributes, FormEvent, ReactNode } from "react";
+import { useMemo, useState } from "react";
 
 type Severity = "info" | "success" | "warning" | "critical";
 type Mood = "nightlife" | "adventure" | "relaxed" | "budget" | "photography" | "social";
@@ -221,24 +221,24 @@ export default function Home() {
     <main className="shell">
       <nav className="top-nav" aria-label="Main navigation">
         <div className="brand">NOMAD OPS</div>
-        <Chip color="success" variant="flat" size="sm">Status</Chip>
-        <Chip variant="bordered" size="sm">Usage billing $0.0112 tracked</Chip>
+        <Chip color="success" variant="soft" size="sm">Status</Chip>
+        <Chip variant="secondary" size="sm">Usage billing $0.0112 tracked</Chip>
         <div className="nav-tabs">
           {["Overview", "Strategy", "Agents", "Apps", "Collections", "Workspace Ops"].map((item) => (
             <button className={item === "Workspace Ops" ? "nav-tab active" : "nav-tab"} key={item}>{item}</button>
           ))}
         </div>
-        <Chip color="danger" variant="flat" size="sm">3 awaiting review</Chip>
-        <Avatar name="SN" size="sm" />
+        <Chip color="danger" variant="soft" size="sm">3 awaiting review</Chip>
+        <AgentAvatar initials="SN" size="sm" />
       </nav>
 
       <section className="agent-strip" aria-label="Active AI agents">
         {Array.from({ length: 42 }).map((_, index) => {
           const agent = agents[index % agents.length];
           return (
-            <Badge key={`${agent.id}-${index}`} color={agent.active ? "success" : "default"} content="" placement="bottom-right" shape="circle">
-              <Avatar className="strip-avatar" name={avatarInitials(agent.name)} size="sm" />
-            </Badge>
+            <span className={agent.active ? "avatar-status active" : "avatar-status"} key={`${agent.id}-${index}`}>
+              <AgentAvatar className="strip-avatar" initials={avatarInitials(agent.name)} size="sm" />
+            </span>
           );
         })}
       </section>
@@ -253,9 +253,9 @@ export default function Home() {
         <aside className="dispatch-panel" aria-label="Dispatch and active runs">
           <div className="panel-title-row">
             <span>DISPATCH</span>
-            <Chip color="success" variant="dot" size="sm">LIVE</Chip>
+            <Chip color="success" variant="soft" size="sm">LIVE</Chip>
           </div>
-          <Button className="location-button" variant="bordered">Goa, India - Panaji to Vagator</Button>
+          <Button className="location-button" variant="outline">Goa, India - Panaji to Vagator</Button>
           <div className="stats-grid">
             <Metric value={activeCount} label="ON ROUTE" tone="blue" />
             <Metric value={0} label="APPROVE" tone="red" />
@@ -265,7 +265,7 @@ export default function Home() {
 
           <div className="mood-grid">
             {moods.map((item) => (
-              <Button key={item} size="sm" variant={mood === item ? "solid" : "bordered"} color={mood === item ? "success" : "default"} onPress={() => changeMood(item)}>
+              <Button key={item} size="sm" variant={mood === item ? "primary" : "outline"} onClick={() => changeMood(item)}>
                 {item}
               </Button>
             ))}
@@ -281,11 +281,11 @@ export default function Home() {
           <div className="agent-list">
             {agents.map((agent) => (
               <button className={selectedAgent.id === agent.id ? "agent-row selected" : "agent-row"} key={agent.id} onClick={() => { setSelectedAgent(agent); activate(agent.id); }}>
-                <Avatar name={avatarInitials(agent.name)} size="sm" />
+                <AgentAvatar initials={avatarInitials(agent.name)} size="sm" />
                 <span className="agent-copy">
                   <span className="agent-name">{agent.name} <b>{agent.tokens}</b></span>
                   <span className="agent-task">{agent.task}</span>
-                  <span className="agent-meta"><Chip size="sm" variant="flat">{agent.tag}</Chip><span>{agent.cost}</span><span>{agent.active ? "running" : "done"}</span></span>
+                  <span className="agent-meta"><Chip size="sm" variant="soft">{agent.tag}</Chip><span>{agent.cost}</span><span>{agent.active ? "running" : "done"}</span></span>
                 </span>
               </button>
             ))}
@@ -295,12 +295,12 @@ export default function Home() {
         <section className="map-panel" aria-label="Spatial intelligence map">
           <div className="map-toolbar">
             {["routes", "labels", "dependencies", "3d"].map((item) => (
-              <Button key={item} size="sm" variant={overlay === item ? "solid" : "flat"} color={overlay === item ? "success" : "default"} onPress={() => setOverlay(item)}>
+              <Button key={item} size="sm" variant={overlay === item ? "primary" : "tertiary"} onClick={() => setOverlay(item)}>
                 {item}
               </Button>
             ))}
           </div>
-          <Chip className="clock-chip" variant="flat">15:28:19 local</Chip>
+          <Chip className="clock-chip" variant="soft">15:28:19 local</Chip>
           <div className={`map-surface overlay-${overlay}`}>
             <svg className="route-layer" viewBox="0 0 1000 560" role="img" aria-label="Active adaptive travel route">
               <path className="route-alt" d="M 140 430 C 300 390, 420 180, 550 210 S 720 280, 870 160" />
@@ -321,20 +321,20 @@ export default function Home() {
           </div>
           <form className="chat-overlay" onSubmit={submitMessage}>
             <span>Signed in to chat with Maya in this public demo.</span>
-            <Input value={message} onValueChange={setMessage} placeholder="Ask to replan: I am tired and it is raining" variant="flat" />
-            <Button type="submit" color="primary" aria-label="Send replan command">Send</Button>
+            <input className="chat-input" value={message} onChange={(event) => setMessage(event.currentTarget.value)} placeholder="Ask to replan: I am tired and it is raining" />
+            <Button type="submit" variant="primary" aria-label="Send replan command">Send</Button>
           </form>
         </section>
 
         <aside className="detail-panel" aria-label="Selected agent and route details">
           <div className="operator-card">
-            <Avatar name={avatarInitials(selectedAgent.name)} />
+            <AgentAvatar initials={avatarInitials(selectedAgent.name)} />
             <div>
               <h2>{selectedAgent.name}</h2>
               <p>{selectedAgent.role}</p>
             </div>
           </div>
-          <Chip color="success" variant="flat">DELIVERED</Chip>
+          <Chip color="success" variant="soft">DELIVERED</Chip>
           <h3>{selectedAgent.task}</h3>
           <p className="detail-copy">{latest.action}</p>
           <div className="score-grid">
@@ -360,7 +360,7 @@ export default function Home() {
           </div>
           <div className="event-grid">
             {Object.keys(scenarios).map((key) => (
-              <Button key={key} size="sm" variant="bordered" onPress={() => runScenario(key as keyof typeof scenarios)}>
+              <Button key={key} size="sm" variant="outline" onClick={() => runScenario(key as keyof typeof scenarios)}>
                 {key}
               </Button>
             ))}
@@ -385,11 +385,52 @@ function Metric({ value, label, tone }: { value: string | number; label: string;
   );
 }
 
+function Chip({
+  children,
+  color = "default",
+  variant = "secondary",
+  size = "md",
+  className = "",
+}: {
+  children: ReactNode;
+  color?: "default" | "accent" | "success" | "warning" | "danger";
+  variant?: "primary" | "secondary" | "tertiary" | "soft";
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  return <span className={`chip chip-${variant} chip-${color} chip-${size} ${className}`}>{children}</span>;
+}
+
+function Button({
+  children,
+  variant = "secondary",
+  size = "md",
+  className = "",
+  ...props
+}: {
+  children: ReactNode;
+  variant?: "primary" | "secondary" | "tertiary" | "outline";
+  size?: "sm" | "md";
+  className?: string;
+} & ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button className={`ui-button ui-button-${variant} ui-button-${size} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+}
+
+function AgentAvatar({ initials, size = "md", className = "" }: { initials: string; size?: "sm" | "md" | "lg"; className?: string }) {
+  return <span className={`agent-avatar agent-avatar-${size} ${className}`}>{initials}</span>;
+}
+
 function Constraint({ label, value, pct }: { label: string; value: string; pct: number }) {
   return (
     <div className="constraint">
       <div><span>{label}</span><b>{value}</b></div>
-      <Progress value={pct} size="sm" color={pct > 75 ? "danger" : pct > 50 ? "warning" : "success"} aria-label={label} />
+      <span className="progress-line" aria-label={label} role="meter" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+        <span className={pct > 75 ? "progress-fill danger" : pct > 50 ? "progress-fill warning" : "progress-fill success"} style={{ width: `${pct}%` }} />
+      </span>
     </div>
   );
 }

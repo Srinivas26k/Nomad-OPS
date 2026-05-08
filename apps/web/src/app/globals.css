@@ -35,6 +35,180 @@ input {
   font: inherit;
 }
 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  background: #fff;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.chip-sm { min-height: 20px; padding: 0 8px; font-size: 10px; }
+.chip-md { min-height: 24px; padding: 0 10px; font-size: 11px; }
+.chip-lg { min-height: 28px; padding: 0 12px; font-size: 12px; }
+
+.chip-soft.chip-success,
+.chip-primary.chip-success {
+  border-color: rgba(34, 197, 94, 0.22);
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.chip-soft.chip-danger,
+.chip-primary.chip-danger {
+  border-color: rgba(239, 68, 68, 0.22);
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.chip-secondary {
+  background: #fff;
+  color: #4b5563;
+}
+
+.chip-tertiary {
+  border-color: transparent;
+  background: transparent;
+}
+
+.ui-button {
+  appearance: none;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-primary);
+  background: #fff;
+  font-weight: 700;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.ui-button:hover {
+  transform: translateY(-1px);
+}
+
+.ui-button-sm {
+  min-height: 25px;
+  padding: 0 9px;
+  font-size: 11px;
+}
+
+.ui-button-md {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.ui-button-primary {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+
+.ui-button-secondary {
+  border-color: var(--border-subtle);
+  background: #fff;
+}
+
+.ui-button-tertiary {
+  border-color: transparent;
+  background: transparent;
+  color: #4b5563;
+}
+
+.ui-button-outline {
+  border-color: var(--border-subtle);
+  background: #fff;
+  color: #374151;
+}
+
+.ui-button-outline:hover,
+.ui-button-secondary:hover {
+  border-color: #d5dce5;
+  background: #f7f9fb;
+}
+
+.agent-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  background: linear-gradient(135deg, #eef6ff, #dcfce7);
+  color: #0f172a;
+  font-weight: 800;
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45);
+}
+
+.agent-avatar-sm {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
+
+.agent-avatar-md {
+  width: 36px;
+  height: 36px;
+  font-size: 12px;
+}
+
+.agent-avatar-lg {
+  width: 48px;
+  height: 48px;
+  font-size: 14px;
+}
+
+.avatar-status {
+  position: relative;
+  display: inline-flex;
+}
+
+.avatar-status::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1.5px solid white;
+  background: #cbd5e1;
+}
+
+.avatar-status.active::after {
+  background: var(--primary);
+}
+
+.progress-line {
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf2f7;
+  border: 1px solid #e6eaf0;
+}
+
+.progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 260ms ease;
+}
+
+.progress-fill.success { background: var(--primary); }
+.progress-fill.warning { background: var(--warning); }
+.progress-fill.danger { background: var(--danger); }
+
 .shell {
   height: 100vh;
   display: grid;
@@ -56,6 +230,7 @@ input {
   gap: 12px;
   padding: 0 14px;
   font-size: 12px;
+  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.02);
 }
 
 .brand {
@@ -92,14 +267,13 @@ input {
 }
 
 .agent-strip {
-  gap: 6px;
+  gap: 5px;
   padding: 0 20px;
   overflow: hidden;
 }
 
 .strip-avatar {
-  border: 2px solid white;
-  box-shadow: 0 0 0 1px var(--primary);
+  margin-left: -3px;
 }
 
 .tab-row {
@@ -110,12 +284,12 @@ input {
 .workspace {
   min-height: 0;
   display: grid;
-  grid-template-columns: 250px 1fr 320px;
+  grid-template-columns: 270px minmax(540px, 1fr) 346px;
 }
 
 .dispatch-panel,
 .detail-panel {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.97);
   border-right: 1px solid var(--border-subtle);
   overflow-y: auto;
   scrollbar-width: none;
@@ -148,6 +322,9 @@ input {
   margin: 0 12px 10px;
   width: calc(100% - 24px);
   justify-content: flex-start;
+  border-radius: 7px;
+  color: #334155;
+  font-weight: 600;
 }
 
 .stats-grid,
@@ -239,6 +416,7 @@ input {
   padding: 9px 12px;
   text-align: left;
   cursor: pointer;
+  align-items: flex-start;
 }
 
 .agent-row:hover,
@@ -304,8 +482,9 @@ input {
   gap: 4px;
   padding: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--border-subtle);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
 }
 
 .clock-chip {
@@ -319,11 +498,14 @@ input {
   position: absolute;
   inset: 0;
   background:
+    radial-gradient(circle at 52% 56%, rgba(255,255,255,0.6), transparent 0.5%),
+    radial-gradient(circle at 66% 44%, rgba(255,255,255,0.55), transparent 0.45%),
+    radial-gradient(circle at 74% 36%, rgba(255,255,255,0.55), transparent 0.45%),
     linear-gradient(115deg, transparent 0 46%, rgba(90, 179, 210, 0.28) 46% 53%, transparent 53%),
     linear-gradient(22deg, transparent 0 60%, rgba(90, 179, 210, 0.26) 60% 67%, transparent 67%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.46) 0 2px, transparent 2px 42px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.5) 0 2px, transparent 2px 48px),
-    #e9ead7;
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.62) 0 2px, transparent 2px 42px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.66) 0 2px, transparent 2px 48px),
+    #e7ead5;
 }
 
 .map-surface::before {
@@ -427,6 +609,21 @@ input {
   grid-column: 1 / -1;
   color: var(--text-muted);
   font-size: 11px;
+}
+
+.chat-input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.chat-input::placeholder {
+  color: #9ca3af;
 }
 
 .operator-card {
