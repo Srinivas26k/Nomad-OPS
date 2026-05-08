@@ -1,384 +1,1112 @@
----
-name: NomadOps
-version: alpha
-description: >
-  Mission Control for Travel — a dense operational dashboard inspired by
-  logistics dispatch systems. The UI is a pixel-faithful recreation of the
-  Playbasis Logistics Command Center aesthetic: dark top nav, three-panel
-  layout (left agent list, center live map, right detail drawer), and an
-  always-live status strip.
+# NOMAD OPS — Light Operations Command Center Design System
 
+Version: v2.0 Light Theme
+Style Direction: Playbasis Logistics Command Center Inspired
+Theme Mode: Light / Operational / Enterprise
+
+---
+
+# Overview
+
+NOMAD OPS is a high-density operational command center interface inspired by modern logistics dispatch systems, AI orchestration dashboards, and live mission-control UIs.
+
+The interface should visually match the reference screenshots:
+
+* Bright neutral canvas
+* Soft grey panels
+* Large live map center
+* Lightweight enterprise styling
+* Minimal shadows
+* Extremely dense information architecture
+* AI-agent orchestration aesthetic
+* Real-time dispatch feeling
+
+The experience should feel like:
+
+> Linear + Uber Dispatch + Airtable Ops + Google Maps + Bloomberg Terminal
+
+but modernized into a clean light enterprise interface.
+
+The UI must feel:
+
+* Live
+* Autonomous
+* Operational
+* Fast
+* Reliable
+* Human-supervised AI
+
+Not consumer.
+Not playful.
+Not startup gradient-heavy.
+
+This is an AI operations control room.
+
+---
+
+# Core Visual Direction
+
+## Primary Principles
+
+1. Light neutral backgrounds
+2. Very subtle borders
+3. Thin separators instead of shadows
+4. Information density first
+5. Map is the hero surface
+6. Green only means ACTIVE / DELIVERED / LIVE
+7. Floating panels should feel lightweight
+8. Typography hierarchy must be extremely clear
+9. Everything should feel instantly scannable
+10. Real-time orchestration aesthetic
+
+---
+
+# Color System
+
+## Base Palette
+
+```yaml
 colors:
-  bg-base: "#0F1117"
-  bg-surface: "#1A1D27"
-  bg-panel: "#13161F"
-  bg-overlay: "#1E2130"
-  bg-hover: "#262A3A"
-  border-subtle: "#2A2E3E"
-  border-strong: "#3A3F52"
-  primary: "#1DB954"
-  primary-muted: "#16913E"
+  bg-base: "#F5F6F8"
+  bg-surface: "#FFFFFF"
+  bg-panel: "#FCFCFD"
+  bg-overlay: "rgba(255,255,255,0.92)"
+  bg-hover: "#F3F5F8"
+  bg-selected: "#EEF6FF"
+
+  border-subtle: "#E6EAF0"
+  border-soft: "#EEF2F6"
+  border-strong: "#D5DCE5"
+
+  text-primary: "#111827"
+  text-secondary: "#4B5563"
+  text-muted: "#9CA3AF"
+  text-inverse: "#FFFFFF"
+
+  primary: "#22C55E"
+  primary-dark: "#16A34A"
+  primary-soft: "#DCFCE7"
+
+  info: "#3B82F6"
   warning: "#F59E0B"
   danger: "#EF4444"
-  info: "#3B82F6"
   purple: "#8B5CF6"
-  text-primary: "#F0F2F7"
-  text-secondary: "#8B90A0"
-  text-muted: "#555B70"
-  text-inverse: "#0F1117"
-  map-route-primary: "#22C55E"
-  map-route-alt: "#A78BFA"
-  map-route-warning: "#F97316"
+
+  map-route-primary: "#4ADE80"
+  map-route-alt: "#60A5FA"
+  map-route-secondary: "#C084FC"
   map-node: "#FFFFFF"
-  tag-app-edit-bg: "#1E3A5F"
-  tag-app-edit-text: "#60A5FA"
-  tag-image-bg: "#1A3A2A"
-  tag-image-text: "#34D399"
-  tag-copy-bg: "#2D1A3A"
-  tag-copy-text: "#C084FC"
-  tag-brief-bg: "#3A2A1A"
-  tag-brief-text: "#FB923C"
-  tag-analyze-bg: "#2A1A3A"
-  tag-analyze-text: "#A78BFA"
-  tag-research-bg: "#3A1A2A"
-  tag-research-text: "#F472B6"
 
+  chip-app-bg: "#E8F1FF"
+  chip-app-text: "#2563EB"
+
+  chip-image-bg: "#E8FFF1"
+  chip-image-text: "#16A34A"
+
+  chip-copy-bg: "#F3E8FF"
+  chip-copy-text: "#9333EA"
+
+  chip-brief-bg: "#FFF2E5"
+  chip-brief-text: "#EA580C"
+
+  chip-research-bg: "#FFE8F1"
+  chip-research-text: "#DB2777"
+```
+
+---
+
+# Theme Feel
+
+## Background Behavior
+
+### Main Canvas
+
+Use:
+
+* `#F5F6F8`
+* slight warm grey tone
+* not pure white
+* no gradients
+
+### Panels
+
+All panels are:
+
+* white or near-white
+* subtle border
+* ultra-soft elevation
+* clean enterprise look
+
+### Borders
+
+Use borders for structure.
+Not shadows.
+
+```css
+border: 1px solid #E6EAF0;
+```
+
+Shadows must remain extremely subtle:
+
+```css
+box-shadow:
+  0 1px 2px rgba(16,24,40,0.04),
+  0 1px 1px rgba(16,24,40,0.02);
+```
+
+---
+
+# Typography System
+
+## Fonts
+
+### Primary Font
+
+```yaml
+DM Sans
+```
+
+### Monospace Font
+
+```yaml
+JetBrains Mono
+```
+
+---
+
+## Typography Scale
+
+```yaml
 typography:
-  display:
-    fontFamily: "DM Sans"
-    fontSize: 1.5rem
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: -0.02em
-  nav-label:
-    fontFamily: "DM Sans"
-    fontSize: 0.8125rem
-    fontWeight: 600
-    letterSpacing: 0.01em
-  section-heading:
-    fontFamily: "DM Sans"
-    fontSize: 0.6875rem
-    fontWeight: 700
-    letterSpacing: 0.08em
-  agent-name:
-    fontFamily: "DM Sans"
-    fontSize: 0.8125rem
-    fontWeight: 600
-    lineHeight: 1.3
-  agent-task:
-    fontFamily: "DM Sans"
-    fontSize: 0.75rem
-    fontWeight: 400
-    lineHeight: 1.4
-  mono:
-    fontFamily: "JetBrains Mono"
-    fontSize: 0.75rem
-    fontWeight: 400
-  detail-value:
-    fontFamily: "DM Sans"
-    fontSize: 1.5rem
-    fontWeight: 700
-    lineHeight: 1
-  label-caps:
-    fontFamily: "DM Sans"
-    fontSize: 0.625rem
-    fontWeight: 700
-    letterSpacing: 0.1em
+  display-xl:
+    size: 28px
+    weight: 700
+    lineHeight: 1.1
 
-rounded:
-  sm: 4px
-  md: 6px
-  lg: 10px
-  pill: 999px
+  display:
+    size: 24px
+    weight: 700
+
+  section-title:
+    size: 11px
+    weight: 700
+    tracking: 0.12em
+    uppercase: true
+
+  nav-label:
+    size: 13px
+    weight: 500
+
+  body:
+    size: 13px
+    weight: 400
+
+  body-small:
+    size: 12px
+    weight: 400
+
+  agent-name:
+    size: 13px
+    weight: 600
+
+  metric-large:
+    size: 28px
+    weight: 700
+
+  mono:
+    size: 12px
+    weight: 500
+```
+
+---
+
+# Layout Architecture
+
+## Global Structure
+
+```text
+┌────────────────────────────────────────────────────────────────────────────┐
+│ TOP NAV                                                                   │
+├────────────────────────────────────────────────────────────────────────────┤
+│ AVATAR STRIP                                                              │
+├───────────────┬──────────────────────────────────────┬────────────────────┤
+│ LEFT PANEL    │ CENTER MAP                           │ RIGHT DRAWER       │
+│               │                                      │                    │
+│ Dispatch      │ Routes                               │ Agent Details      │
+│ Active Runs   │ Labels                               │ Route Timeline     │
+│ Queue         │ Dependencies                         │ Cost Metrics       │
+│               │ Chat Overlay                         │                    │
+├───────────────┴──────────────────────────────────────┴────────────────────┤
+│ REVIEW FOOTER                                                             │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# Sizing System
+
+```yaml
+layout:
+  top-nav-height: 48px
+  avatar-strip-height: 44px
+  left-sidebar-width: 280px
+  right-sidebar-width: 320px
+  bottom-review-height: 34px
 
 spacing:
   xs: 4px
   sm: 8px
   md: 12px
   lg: 16px
-  xl: 24px
-
-components:
-  nav-bar:
-    backgroundColor: "{colors.bg-surface}"
-    height: 44px
-    borderBottom: "1px solid {colors.border-subtle}"
-    padding: "0 16px"
-  nav-tab:
-    textColor: "{colors.text-secondary}"
-    typography: "{typography.nav-label}"
-    padding: "0 12px"
-    height: 44px
-  nav-tab-active:
-    textColor: "{colors.text-primary}"
-    borderBottom: "2px solid {colors.primary}"
-  nav-badge:
-    backgroundColor: "{colors.bg-overlay}"
-    textColor: "{colors.text-secondary}"
-    rounded: "{rounded.pill}"
-    padding: "2px 6px"
-  agent-panel:
-    backgroundColor: "{colors.bg-panel}"
-    width: 268px
-    borderRight: "1px solid {colors.border-subtle}"
-  dispatch-header:
-    backgroundColor: "{colors.bg-panel}"
-    borderBottom: "1px solid {colors.border-subtle}"
-    padding: "10px 14px"
-  location-selector:
-    backgroundColor: "{colors.bg-overlay}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.md}"
-    padding: "8px 10px"
-  stats-row:
-    backgroundColor: "transparent"
-    padding: "8px 14px"
-  agent-row:
-    backgroundColor: "transparent"
-    padding: "8px 14px"
-    borderBottom: "1px solid {colors.border-subtle}"
-  agent-row-active:
-    backgroundColor: "{colors.bg-hover}"
-    borderLeft: "2px solid {colors.primary}"
-  tag-pill:
-    rounded: "{rounded.sm}"
-    padding: "2px 6px"
-    typography: "{typography.label-caps}"
-  map-panel:
-    backgroundColor: "#1A2035"
-  map-toolbar:
-    backgroundColor: "rgba(15,17,23,0.85)"
-    rounded: "{rounded.pill}"
-    padding: "6px 12px"
-  map-toolbar-button-active:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.text-inverse}"
-  clock-chip:
-    backgroundColor: "rgba(15,17,23,0.85)"
-    textColor: "{colors.text-primary}"
-    typography: "{typography.mono}"
-    rounded: "{rounded.md}"
-    padding: "5px 10px"
-  chat-overlay:
-    backgroundColor: "#FFFFFF"
-    rounded: "{rounded.lg}"
-    padding: "16px 20px"
-    width: 520px
-  detail-drawer:
-    backgroundColor: "{colors.bg-panel}"
-    width: 300px
-    borderLeft: "1px solid {colors.border-subtle}"
-    padding: "{spacing.lg}"
-  delivered-badge:
-    backgroundColor: "#0D3320"
-    textColor: "{colors.primary}"
-    rounded: "{rounded.pill}"
-    padding: "3px 10px"
-  fare-grid:
-    backgroundColor: "{colors.bg-overlay}"
-    rounded: "{rounded.md}"
-    padding: "10px 12px"
-  review-bar:
-    backgroundColor: "{colors.bg-surface}"
-    borderTop: "1px solid {colors.border-subtle}"
-    height: 36px
-  review-badge:
-    backgroundColor: "{colors.danger}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.pill}"
-    padding: "2px 8px"
----
-
-## Overview
-
-**Operational Command Center — Dark Mission Control.**
-
-NOMAD OPS replicates the Playbasis Logistics Command Center UI exactly:
-a near-black three-panel layout where the map is always live, the left
-panel lists active AI agents as "runs", and the right drawer shows the
-selected agent's delivery detail. The aesthetic is **Bloomberg Terminal
-meets Google Maps** — dense, purposeful, zero decoration.
-
-The singular green `#1DB954` is the only "warm" signal in an otherwise
-cool blue-grey dark palette. It means one thing only: **live / active /
-delivered**. Everything else is hierarchy through opacity.
+  xl: 20px
+  xxl: 24px
+```
 
 ---
 
-## Colors
+# Radius System
 
-- **bg-base (#0F1117):** True canvas floor — only visible at extreme edges
-- **bg-surface (#1A1D27):** Top nav bar and bottom review strip
-- **bg-panel (#13161F):** Left agent panel and right detail drawer — the two side columns
-- **bg-overlay (#1E2130):** Raised cards within panels (location selector, fare grid)
-- **bg-hover (#262A3A):** Active/selected agent row tint
-- **primary (#1DB954):** The ONLY green. Live dot, route line, delivered badge, active row left-border. Never decorative.
-- **warning (#F59E0B):** Token counts only (⚡ 15.2k, ⚡ 14.9k pattern)
-- **danger (#EF4444):** "Needs review" badge at bottom strip — urgency signal
-- **text-secondary (#8B90A0):** Labels, descriptions, meta — the workhorse grey
-- **text-muted (#555B70):** ACTIVE RUNS heading, column labels — nearly invisible
+```yaml
+radius:
+  sm: 4px
+  md: 6px
+  lg: 10px
+  xl: 14px
+  pill: 999px
+```
 
-Tag pills are **hue-matched pairs**: dark-bg + bright-text within the
-same color family. Blue for APP EDIT, green for IMAGE, purple for COPY,
-orange for BRIEF, violet for ANALYZE, pink for RESEARCH.
+The UI should never feel overly rounded.
+
+No glassmorphism.
+No giant radius.
+No floating mobile-app look.
+
+---
+
+# Top Navigation
+
+## Behavior
+
+The top navigation is:
+
+* thin
+* operational
+* compact
+* horizontally dense
+* always visible
+
+## Styling
+
+```css
+height: 48px;
+background: #FFFFFF;
+border-bottom: 1px solid #E6EAF0;
+padding: 0 18px;
+```
 
 ---
 
-## Typography
+## Left Side
 
-**DM Sans** everywhere except numbers. Chosen for: excellent small-size
-legibility on dark, slightly geometric personality that reads "ops tool"
-not "consumer app", and wide weight range (400→700 all used here).
+Contains:
 
-**JetBrains Mono** for all live numerical data: costs (`$0.426`),
-token counts (`15.6k`), timestamps (`15:28:19`). Monospace ensures
-columns align and data reads as machine output, not marketing copy.
+* Brand logo
+* Workspace selector
+* Status badge
+* Usage billing chip
 
-Key sizes:
-- 13px agent names — readable in a dense list
-- 12px task descriptions — secondary, never competes with name
-- 10px label-caps section headers (ACTIVE RUNS, ROUTE, FARE METER) — maximum information density
+## Center
+
+Contains tabs:
+
+* Overview
+* Strategy
+* Agents
+* Team Activity
+* Results
+* Inbox
+* Autonomy
+* Data Sources
+* Calendar
+* Map
+
+### Active Tab
+
+```css
+color: #111827;
+font-weight: 600;
+border-bottom: 2px solid #111827;
+```
+
+### Inactive Tab
+
+```css
+color: #6B7280;
+```
 
 ---
+
+# Avatar Agent Strip
+
+## Behavior
+
+A horizontally scrolling overlapping avatar system.
+
+Represents:
+
+* live AI workers
+* autonomous agents
+* active operators
+
+## Styling
+
+```css
+height: 44px;
+background: #FFFFFF;
+border-bottom: 1px solid #E6EAF0;
+```
+
+### Avatar Rules
+
+```css
+width: 28px;
+height: 28px;
+border-radius: 999px;
+border: 2px solid white;
+margin-left: -6px;
+```
+
+### Status Ring
+
+Active agents:
+
+```css
+box-shadow: 0 0 0 2px #22C55E;
+```
+
+---
+
+# Left Dispatch Panel
+
+## Structure
+
+Contains:
+
+1. Dispatch Header
+2. Location Selector
+3. Stats Row
+4. Active Runs List
+
+---
+
+## Panel Styling
+
+```css
+background: #FCFCFD;
+border-right: 1px solid #E6EAF0;
+```
+
+---
+
+## Dispatch Header
+
+### Contains
+
+* DISPATCH label
+* city name
+* live indicator
+
+### Styling
+
+```css
+padding: 14px;
+border-bottom: 1px solid #E6EAF0;
+```
+
+---
+
+# Location Selector
+
+## Style
+
+```css
+background: white;
+border: 1px solid #E6EAF0;
+border-radius: 8px;
+padding: 10px 12px;
+```
+
+Should feel like:
+
+* Linear
+* Notion
+* modern enterprise select field
+
+---
+
+# Stats Row
+
+## Structure
+
+4-column metrics:
+
+* ON ROUTE
+* APPROVE
+* QUEUED
+* DELIVERED
+
+## Metric Number
+
+```css
+font-size: 28px;
+font-weight: 700;
+```
+
+## Label
+
+```css
+font-size: 10px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: #9CA3AF;
+```
+
+---
+
+# Active Runs List
+
+## Behavior
+
+This is the highest density area.
+
+Should support:
+
+* virtualized rendering
+* infinite scroll
+* fast filtering
+* realtime updates
+* hover interactions
+
+Scrollbar must be hidden.
+
+---
+
+# Agent Row
+
+## Structure
+
+```text
+Avatar
+  Name + token count
+  Task description
+  Tag + cost + status
+```
+
+---
+
+## Styling
+
+```css
+padding: 10px 14px;
+border-bottom: 1px solid #EEF2F6;
+background: transparent;
+transition: background 120ms ease;
+```
+
+### Hover State
+
+```css
+background: #F7F9FB;
+```
+
+### Active State
+
+```css
+background: #EEF6FF;
+border-left: 2px solid #22C55E;
+```
+
+---
+
+# Agent Metadata
+
+## Name
+
+```css
+font-size: 13px;
+font-weight: 600;
+color: #111827;
+```
+
+## Description
+
+```css
+font-size: 12px;
+color: #6B7280;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+```
+
+## Token Count
+
+```css
+font-family: "JetBrains Mono";
+font-size: 11px;
+color: #F59E0B;
+```
+
+---
+
+# Task Tags
+
+## Styling
+
+```css
+padding: 2px 6px;
+border-radius: 4px;
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+```
+
+---
+
+## Tag Variants
+
+### APP EDIT
+
+```css
+background: #E8F1FF;
+color: #2563EB;
+```
+
+### IMAGE
+
+```css
+background: #E8FFF1;
+color: #16A34A;
+```
+
+### COPY
+
+```css
+background: #F3E8FF;
+color: #9333EA;
+```
+
+### BRIEF
+
+```css
+background: #FFF2E5;
+color: #EA580C;
+```
+
+### ANALYZE
+
+```css
+background: #EEF2FF;
+color: #6366F1;
+```
+
+### RESEARCH
+
+```css
+background: #FFE8F1;
+color: #DB2777;
+```
+
+---
+
+# Center Map Panel
+
+## Philosophy
+
+The map is the hero.
+
+Everything else supports the map.
+
+The map should feel:
+
+* alive
+* realtime
+* operational
+* global
+* intelligent
+
+---
+
+# Map Styling
+
+Use:
+
+* Google Maps
+* Mapbox
+* MapLibre
+
+with:
+
+* desaturated colors
+* slightly warm roads
+* subtle labels
+* soft water tones
+
+The map should NOT be dark.
+
+The references clearly use:
+
+* light map base
+* enterprise overlays
+* clean navigation styling
+
+---
+
+# Route Lines
+
+## Primary Route
+
+```css
+stroke: #4ADE80;
+stroke-width: 3px;
+```
+
+## Secondary Route
+
+```css
+stroke: #60A5FA;
+stroke-width: 2px;
+```
+
+## Alternate Route
+
+```css
+stroke: #C084FC;
+stroke-width: 2px;
+```
+
+---
+
+# Route Nodes
+
+```css
+width: 10px;
+height: 10px;
+background: white;
+border: 2px solid #4ADE80;
+border-radius: 999px;
+```
+
+---
+
+# Map Toolbar
+
+## Position
+
+Top center floating toolbar.
+
+---
+
+## Styling
+
+```css
+background: rgba(255,255,255,0.92);
+backdrop-filter: blur(10px);
+border: 1px solid #E6EAF0;
+border-radius: 999px;
+padding: 4px;
+```
+
+---
+
+## Toolbar Buttons
+
+### Default
+
+```css
+background: transparent;
+color: #4B5563;
+```
+
+### Active
+
+```css
+background: #111827;
+color: white;
+```
+
+---
+
+# Clock Chip
+
+## Styling
+
+```css
+background: rgba(255,255,255,0.92);
+border: 1px solid #E6EAF0;
+border-radius: 999px;
+padding: 6px 12px;
+font-family: "JetBrains Mono";
+font-size: 12px;
+```
+
+Position:
+
+* top-right of map
+
+---
+
+# Chat Overlay
+
+## Behavior
+
+Floating AI assistant input.
+
+Never fullscreen.
+Never modal.
+Always lightweight.
+
+---
+
+## Position
+
+```css
+position: absolute;
+bottom: 80px;
+left: 50%;
+transform: translateX(-50%);
+```
+
+---
+
+## Styling
+
+```css
+width: 520px;
+background: rgba(255,255,255,0.96);
+backdrop-filter: blur(20px);
+border: 1px solid #E6EAF0;
+border-radius: 16px;
+padding: 16px 18px;
+```
+
+---
+
+## Input Field
+
+```css
+border: none;
+outline: none;
+background: transparent;
+font-size: 13px;
+width: 100%;
+```
+
+---
+
+## Send Button
+
+```css
+width: 34px;
+height: 34px;
+border-radius: 999px;
+background: #111827;
+color: white;
+```
+
+---
+
+# Right Detail Drawer
+
+## Purpose
+
+Displays:
+
+* selected agent
+* delivery status
+* workflow details
+* route information
+* metrics
+* operational context
+
+---
+
+# Drawer Styling
+
+```css
+background: rgba(255,255,255,0.96);
+border-left: 1px solid #E6EAF0;
+padding: 18px;
+```
+
+---
+
+# Delivered Badge
+
+```css
+background: #DCFCE7;
+color: #16A34A;
+padding: 4px 10px;
+border-radius: 999px;
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 0.08em;
+```
+
+---
+
+# Route Timeline
+
+## Structure
+
+Three-stage vertical timeline:
+
+1. Pickup Origin
+2. Transit
+3. Dropoff Destination
+
+---
+
+## Timeline Line
+
+```css
+border-left: 1.5px solid #D5DCE5;
+```
+
+---
+
+## Timeline States
+
+### Complete
+
+Filled green node.
+
+### Active
+
+Dark filled node.
+
+### Pending
+
+Outlined circle.
+
+---
+
+# Fare Meter
 
 ## Layout
 
-Full-viewport, fixed-height, three-column. Nothing scrolls except the
-agent list and right drawer content.
+2-column metrics grid.
 
-```
-┌───────────────────────────────────────────────────────────────────┐
-│  TOP NAV (44px): Brand logo · tabs with badges · status pill      │
-├───────────────────────────────────────────────────────────────────┤
-│  AVATAR STRIP (44px): Overlapping agent avatar chips (28px each)  │
-├────────────────┬────────────────────────────────┬─────────────────┤
-│  LEFT PANEL    │      CENTER MAP                │  RIGHT DRAWER   │
-│  268px         │      flex: 1                   │  300px          │
-│                │                                │                 │
-│  Dispatch hdr  │  Dark-styled Google Maps       │  Agent avatar   │
-│  Location pill │  Routes/Labels/Deps toolbar    │  DELIVERED pill │
-│  Stats 4-col   │  Live clock chip (top-right)   │  Task title     │
-│  Active Runs   │  Green + purple polylines      │  Description    │
-│  Agent rows    │  White node dots               │  ETA  |  %      │
-│  (scrollable)  │  Chat overlay (bottom center)  │  Route steps    │
-│                │                                │  Fare meter     │
-├────────────────┴────────────────────────────────┴─────────────────┤
-│  NEEDS REVIEW BAR (36px): red badge + "3 awaiting review"         │
-└───────────────────────────────────────────────────────────────────┘
+---
+
+## Styling
+
+```css
+background: #F9FAFB;
+border: 1px solid #E6EAF0;
+border-radius: 10px;
+padding: 12px;
 ```
 
-Spatial rules:
-- All panels use `border` not `box-shadow` for separation
-- Left panel list: `overflow-y: auto; scrollbar-width: none` (no visible scrollbar)
-- Avatar strip: `overflow-x: auto; scrollbar-width: none`, avatars `margin-left: -6px`
-- Map fills its column completely — no inset, no padding
-- Chat overlay: `position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%)`
+---
+
+## Large Metrics
+
+```css
+font-size: 28px;
+font-weight: 700;
+font-family: "DM Sans";
+```
+
+## Labels
+
+```css
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: #9CA3AF;
+```
 
 ---
 
-## Elevation & Depth
+# Review Footer
 
-Border-only layering. No shadows on panels. The map provides all depth.
+## Styling
 
-| Level | Color | Used For |
-|-------|-------|----------|
-| 0 | bg-base | True canvas |
-| 1 | bg-panel | Side columns |
-| 2 | bg-surface | Top nav, bottom bar |
-| 3 | bg-overlay | Inline cards, fare block, location picker |
-| 4 | White (#FFFFFF) | Chat overlay — only element that "lifts" visually |
+```css
+height: 34px;
+background: white;
+border-top: 1px solid #E6EAF0;
+```
 
 ---
 
-## Shapes
+## Badge
 
-Tight radii everywhere. This is a tool, not a product landing page.
-
-- `rounded.sm` (4px): tag pills, tiny badges
-- `rounded.md` (6px): location selector, clock chip, toolbar buttons, fare grid
-- `rounded.pill` (999px): avatars, nav badges, status pills, toolbar group container
-- `rounded.lg` (10px): chat overlay only
-
-Maximum radius used anywhere: 10px. No `xl`, no `2xl`.
-
----
-
-## Components
-
-### Agent Row (Left Panel)
-
-The core repeating unit. 268px wide, 8px top/bottom padding, 14px left/right.
-
-Structure (horizontal flex):
-1. Avatar circle (28×28, rounded-full, object-cover)
-2. Content (flex-col, flex: 1, min-width: 0):
-   - **Line 1**: agent name (bold 13px) + `⚡ {tokens}` (warning mono, right-aligned)
-   - **Line 2**: task description (12px text-secondary, single-line truncate)
-   - **Line 3**: `[TYPE TAG]` + `$ {cost}` (mono text-secondary) + `done` (muted label-caps)
-3. Bottom border: `1px solid border-subtle`
-4. Selected state: `bg-hover` bg + `border-left: 2px solid primary`
-
-### Stats Row (4 columns)
-
-Below the location selector. Four equal-width columns, center-aligned:
-- Large number: `display` typography (1.5rem bold)
-- Label below: `label-caps` in text-muted (ON ROUTE, APPROVE, QUEUED, DELIVERED)
-- Zero values render in `text-primary`; non-zero DELIVERED renders in `primary` green
-
-### Map Toolbar
-
-Frosted pill, top-center of map, absolute positioned:
-- Container: `bg: rgba(15,17,23,0.85)`, `backdrop-filter: blur(8px)`, `rounded.pill`, `border: 1px solid border-subtle`
-- Buttons: Routes (active = `primary` green bg + dark text), Labels, Dependencies, 3D
-- Vertical separator before 3D button
-
-### Route on Map
-
-- Active route: 3px solid `map-route-primary` (#22C55E)
-- Alternate route: 2px slightly-transparent `map-route-alt` (#A78BFA)  
-- Node dots: 10px white filled circle with `map-route-primary` 2px border, at each waypoint
-- Map base: Google Maps with custom JSON style — greyed-out roads, dark water, minimal labels
-
-### Right Drawer — Route Steps
-
-Vertical timeline, three steps:
-1. **PICKUP · ORIGIN** — filled green circle icon
-2. **TRANSIT · APP EDIT** — filled dark circle  
-3. **DROPOFF · DESTINATION** — empty ring icon (pending)
-
-Timeline track: `border-left: 1.5px solid border-strong` connecting all three.
-Each step: `section-heading` ALL CAPS label + bold location name + `agent-task` sub-label.
-
-### Fare Meter Grid
-
-2-column grid inside `bg-overlay` rounded card:
-- Left: COST — `$0.426` in `detail-value` + "Low cost" label-caps
-- Right: TOKENS — `15.6k` in `detail-value` + "11,520 in · 4,040 out" breakdown
-
-### Chat Overlay
-
-White `#FFFFFF` card, `rounded.lg`, floating over map bottom-center.
-- Line 1: "Sign in to chat with Maya in this public demo." — 12px text-muted
-- Line 2: Placeholder input text (13px text-muted) + dark send button (32px circle, `→`)
-- No visible input border — the card edge IS the container
+```css
+background: #EF4444;
+color: white;
+padding: 2px 8px;
+border-radius: 999px;
+font-size: 10px;
+font-weight: 700;
+```
 
 ---
 
-## Do's and Don'ts
+# Interaction Principles
 
-**Do:**
-- Use green (`#1DB954`) ONLY for live/active/success/delivered states
-- Render ALL numbers in JetBrains Mono — costs, tokens, timestamps, ETAs
-- Overlap avatars in the strip with `margin-left: -6px` — signals a team, not a list
-- Keep map at full contrast and brightness — never dim it with overlays
-- Truncate agent task descriptions to single line — density over completeness
-- Show the left panel's active row with BOTH `bg-hover` AND the green left-border
+## Hover Speed
 
-**Don't:**
-- Use border-radius above 10px anywhere
-- Add gradient fills to any panel background — flat darks only
-- Add more than 6 tag pill color families
-- Use `text-primary` (#F0F2F7) for secondary metadata — always use `text-secondary`
-- Render the chat as a full modal — it's always partial, floating, non-blocking
-- Add hover transitions longer than 120ms — this is an ops tool, not a landing page
-- Use Inter, Roboto, or system fonts — DM Sans + JetBrains Mono only
+```css
+transition: all 120ms ease;
+```
+
+Never slow.
+
+---
+
+# Animation Philosophy
+
+Minimal.
+Operational.
+Fast.
+
+Allowed:
+
+* subtle hover fade
+* row highlight
+* route drawing
+* live pulse
+* loading shimmer
+
+Not allowed:
+
+* bouncy animations
+* overscaled motion
+* heavy easing
+* consumer-app motion
+
+---
+
+# Data Density Rules
+
+## Always Prioritize
+
+1. Scanability
+2. Realtime clarity
+3. Hierarchy
+4. Operational trust
+5. Human oversight
+
+---
+
+# Important UX Rules
+
+## DO
+
+* Keep everything aligned to an 8px grid
+* Use subtle borders everywhere
+* Keep typography extremely consistent
+* Use JetBrains Mono for all metrics
+* Keep map fully visible
+* Make agent rows highly dense
+* Preserve white space only where necessary
+* Use green only for positive live state
+* Make UI feel enterprise-grade
+* Ensure panels feel lightweight
+
+---
+
+# DO NOT
+
+* Use gradients
+* Use neon colors
+* Use giant shadows
+* Use oversized border radius
+* Add marketing-style visuals
+* Add colorful dashboards
+* Add unnecessary charts
+* Make panels opaque and heavy
+* Turn this into a SaaS landing page
+* Use Apple-style frosted UI excessively
+
+---
+
+# Engineering Notes
+
+## Recommended Stack
+
+### Frontend
+
+* Next.js
+* Tailwind CSS
+* Framer Motion (minimal)
+* shadcn/ui
+* Mapbox GL / MapLibre
+
+---
+
+## Recommended Patterns
+
+### Layout
+
+```css
+height: 100vh;
+overflow: hidden;
+```
+
+### Left Panel Scroll
+
+```css
+overflow-y: auto;
+scrollbar-width: none;
+```
+
+### Avatar Strip
+
+```css
+overflow-x: auto;
+scrollbar-width: none;
+```
+
+### Map Fill
+
+```css
+position: absolute;
+inset: 0;
+```
+
+---
+
+# Final Experience Goal
+
+The final product should feel like:
+
+> A real-time autonomous AI workforce operating globally from a mission control center.
+
+Users should instantly understand:
+
+* which agents are active
+* where operations are happening
+* what tasks are in-flight
+* what needs review
+* what AI systems are doing
+* how workflows move geographically
+
+The interface must communicate:
+
+* trust
+* orchestration
+* scale
+* realtime intelligence
+* operational precision
+
+Everything should feel:
+
+* deliberate
+* dense
+* fast
+* calm
+* enterprise-grade
+* human-supervised AI
