@@ -31,7 +31,7 @@ class WeatherAgent(BaseAgent):
         disruption = request.payload.get("disruption_type") or request.payload.get("event_type")
         risk = weather_risk_for_event(disruption)
         session.constraints.weather_risk = risk
-        severity = Severity.warning if risk >= 70 else Severity.info
+        severity = Severity.critical if risk >= 80 else Severity.warning if risk >= 70 else Severity.info
         return [
             AgentDecision(
                 agent=self.name,
@@ -178,4 +178,3 @@ class ExplainabilityAgent(BaseAgent):
                 severity=Severity.success,
             )
         ]
-
