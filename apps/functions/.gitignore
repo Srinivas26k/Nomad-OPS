@@ -1,3 +1,7 @@
 .venv
 
 .env
+
+apps/functions/.pytest_cache
+
+apps/functions/.ruff_cache

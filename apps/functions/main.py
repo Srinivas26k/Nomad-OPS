@@ -4,6 +4,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from langchain_core.messages import HumanMessage
+from agents import app_graph
 
 app = FastAPI(title="NOMAD OPS Backend")
 
@@ -42,35 +44,48 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            # In a real scenario, this data triggers the Agent workflow
-            # For the MVP, we echo it back as an Orchestrator decision
             payload = json.loads(data)
+            user_input = payload.get("message", "")
             
-            # Simulate invoking the LangGraph agents
+            if not user_input:
+                continue
+
+            # Stream Orchestrator starting
             await manager.broadcast(json.dumps({
                 "type": "decision",
                 "data": {
-                    "agent": "OrchestratorAgent",
-                    "trigger": f"Received event: {payload.get('event', 'unknown')}",
-                    "action": "Routing request to specialized agents...",
+                    "agent": "System",
+                    "trigger": "Input received",
+                    "action": "Starting Orchestrator flow...",
                     "outcome": "Pending",
                     "severity": "info"
                 }
             }))
-            
-            # Simulate delay for LLM reasoning
-            await asyncio.sleep(1.5)
-            
-            await manager.broadcast(json.dumps({
-                "type": "decision",
-                "data": {
-                    "agent": "RoutingAgent",
-                    "trigger": "Orchestrator assigned routing task",
-                    "action": "Calculating new optimal route via kimi-k2.6:cloud",
-                    "outcome": "Route updated successfully",
-                    "severity": "success"
-                }
-            }))
-            
+
+            # Execute LangGraph asynchronously
+            # Note: For production, this should run in a threadpool to not block the async event loop
+            try:
+                state_input = {"messages": [HumanMessage(content=user_input)], "decisions": []}
+                # Invoke graph synchronously for demo purposes
+                final_state = app_graph.invoke(state_input)
+                
+                # Stream the decisions back to the UI
+                for decision in final_state.get("decisions", []):
+                    await manager.broadcast(json.dumps({
+                        "type": "decision",
+                        "data": decision.dict()
+                    }))
+            except Exception as e:
+                await manager.broadcast(json.dumps({
+                    "type": "decision",
+                    "data": {
+                        "agent": "ErrorAgent",
+                        "trigger": "Graph execution failed",
+                        "action": str(e),
+                        "outcome": "Failed",
+                        "severity": "critical"
+                    }
+                }))
+                
     except WebSocketDisconnect:
         manager.disconnect(websocket)
