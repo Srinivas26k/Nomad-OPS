@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOMAD OPS — Travel Mission Control</title>
+  <meta name="description" content="AI-powered real-time travel orchestration engine. Mission control for travel." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- MapLibre GL JS -->
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <nav class="nav-bar" role="navigation" aria-label="Main navigation">
+    <div class="nav-left">
+      <div class="nav-logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">NOMAD OPS</span>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab nav-tab--active" id="tab-command" aria-selected="true">Command Center <span class="nav-badge">LIVE</span></button>
+        <button class="nav-tab" id="tab-agents" aria-selected="false">Agents <span class="nav-badge">7</span></button>
+        <button class="nav-tab" id="tab-logs" aria-selected="false">Decision Log <span class="nav-badge" id="log-count">0</span></button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <span class="status-pill" id="status-pill">
+        <span class="status-dot pulse"></span>
+        LIVE SESSION
+      </span>
+      <span class="nav-session-id mono" id="session-id">SES-GOA-001</span>
+    </div>
+  </nav>
+
+  <!-- AVATAR STRIP -->
+  <div class="avatar-strip" aria-label="Active agents">
+    <span class="avatar-label">ACTIVE AGENTS</span>
+    <div class="avatar-list" id="avatar-list">
+      <div class="avatar-chip" title="OrchestratorAgent" style="background:#1DB954;color:#0F1117">OR</div>
+      <div class="avatar-chip" title="RoutingAgent" style="background:#3B82F6">RO</div>
+      <div class="avatar-chip" title="WeatherAgent" style="background:#8B5CF6">WX</div>
+      <div class="avatar-chip" title="BudgetAgent" style="background:#F59E0B;color:#0F1117">BU</div>
+      <div class="avatar-chip" title="ExperienceAgent" style="background:#EC4899">EX</div>
+      <div class="avatar-chip" title="SocialAgent" style="background:#14B8A6">SO</div>
+      <div class="avatar-chip" title="RecoveryAgent" style="background:#EF4444">RC</div>
+    </div>
+    <div class="avatar-strip-right">
+      <span class="trip-label">Goa · ₹15,000 budget · Nightlife</span>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT: 3 PANELS -->
+  <main class="main-grid" role="main">
+
+    <!-- LEFT PANEL -->
+    <aside class="left-panel" aria-label="Operational constraints and agent list">
+
+      <!-- Dispatch Header -->
+      <div class="dispatch-header">
+        <div class="location-selector" id="location-selector">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Goa, India</span>
+        </div>
+        <div class="mood-selector" id="mood-selector">
+          <button class="mood-chip mood-chip--active" data-mood="nightlife" id="mood-nightlife">🌙 Nightlife</button>
+          <button class="mood-chip" data-mood="adventure" id="mood-adventure">⚡ Adventure</button>
+          <button class="mood-chip" data-mood="relaxed" id="mood-relaxed">🌿 Relaxed</button>
+          <button class="mood-chip" data-mood="budget" id="mood-budget">💰 Budget</button>
+          <button class="mood-chip" data-mood="photo" id="mood-photo">📸 Photo</button>
+          <button class="mood-chip" data-mood="social" id="mood-social">👥 Social</button>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-col">
+          <span class="stat-value mono" id="stat-route">3</span>
+          <span class="stat-label">ON ROUTE</span>
+        </div>
+        <div class="stat-col">
+          <span class="stat-value mono" id="stat-approve">1</span>
+          <span class="stat-label">APPROVE</span>
+        </div>
+        <div class="stat-col">
+          <span class="stat-value mono" id="stat-queued">2</span>
+          <span class="stat-label">QUEUED</span>
+        </div>
+        <div class="stat-col">
+          <span class="stat-value mono stat-value--green" id="stat-delivered">5</span>
+          <span class="stat-label">DECISIONS</span>
+        </div>
+      </div>
+
+      <!-- Constraint Gauges -->
+      <div class="section-heading">CONSTRAINTS</div>
+      <div class="constraints-list">
+
+        <div class="constraint-item">
+          <div class="constraint-row">
+            <span class="constraint-icon">💰</span>
+            <span class="constraint-name">Budget</span>
+            <span class="constraint-value mono" id="budget-value">₹12,400</span>
+          </div>
+          <div class="gauge-track"><div class="gauge-fill gauge-fill--green" id="budget-gauge" style="width:82%"></div></div>
+        </div>
+
+        <div class="constraint-item">
+          <div class="constraint-row">
+            <span class="constraint-icon">🌧️</span>
+            <span class="constraint-name">Weather Risk</span>
+            <span class="constraint-badge constraint-badge--info" id="weather-badge">LOW</span>
+          </div>
+          <div class="gauge-track"><div class="gauge-fill gauge-fill--blue" id="weather-gauge" style="width:20%"></div></div>
+        </div>
+
+        <div class="constraint-item">
+          <div class="constraint-row">
+            <span class="constraint-icon">👥</span>
+            <span class="constraint-name">Crowd Density</span>
+            <span class="constraint-value mono" id="crowd-value">34%</span>
+          </div>
+          <div class="gauge-track"><div class="gauge-fill gauge-fill--blue" id="crowd-gauge" style="width:34%"></div></div>
+        </div>
+
+        <div class="constraint-item">
+          <div class="constraint-row">
+            <span class="constraint-icon">⚡</span>
+            <span class="constraint-name">Energy</span>
+            <span class="constraint-value mono" id="energy-value">78%</span>
+          </div>
+          <div class="gauge-track"><div class="gauge-fill gauge-fill--green" id="energy-gauge" style="width:78%"></div></div>
+        </div>
+
+        <div class="constraint-item">
+          <div class="constraint-row">
+            <span class="constraint-icon">🚌</span>
+            <span class="constraint-name">Transport</span>
+            <span class="constraint-badge constraint-badge--green" id="transport-badge">ON TIME</span>
+          </div>
+        </div>
+
+        <div class="constraint-item">
+          <div class="constraint-row">
+            <span class="constraint-icon">⏱️</span>
+            <span class="constraint-name">Session</span>
+            <span class="constraint-value mono" id="session-timer">04:32:11</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Active Runs -->
+      <div class="section-heading">ACTIVE RUNS</div>
+      <div class="agent-list" id="agent-list">
+        <!-- Injected by JS -->
+      </div>
+    </aside>
+
+    <!-- CENTER MAP -->
+    <section class="map-panel" aria-label="Spatial intelligence map">
+      <div id="map"></div>
+
+      <!-- Map Toolbar -->
+      <div class="map-toolbar" role="toolbar" aria-label="Map view controls">
+        <button class="toolbar-btn toolbar-btn--active" id="btn-routes" aria-pressed="true">Routes</button>
+        <button class="toolbar-btn" id="btn-labels" aria-pressed="false">Labels</button>
+        <button class="toolbar-btn" id="btn-heat" aria-pressed="false">Heatmap</button>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" id="btn-3d" aria-pressed="false">3D</button>
+      </div>
+
+      <!-- Clock Chip -->
+      <div class="clock-chip mono" id="clock-chip" aria-live="polite" aria-label="Current time"></div>
+
+      <!-- Reroute Pulse Overlay -->
+      <div class="reroute-pulse" id="reroute-pulse"></div>
+
+      <!-- Chat Overlay -->
+      <div class="chat-overlay" id="chat-overlay" role="complementary" aria-label="Voice input">
+        <p class="chat-hint">Speak a command or type to replan your journey.</p>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input" placeholder='"I\'m tired and it\'s raining…"' aria-label="Voice command input" />
+          <button class="chat-send" id="chat-send" aria-label="Send command">→</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL — Decision Feed -->
+    <aside class="right-panel" aria-label="AI decision feed">
+      <div class="section-heading">AI DECISION FEED</div>
+      <div class="decision-feed" id="decision-feed" role="log" aria-live="polite" aria-label="Live AI decisions">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Route Steps -->
+      <div class="section-heading" style="margin-top:12px">ROUTE</div>
+      <div class="route-steps" id="route-steps">
+        <div class="route-step">
+          <div class="step-icon step-icon--pickup"></div>
+          <div class="step-body">
+            <div class="step-type">PICKUP · ORIGIN</div>
+            <div class="step-name">Panaji City Centre</div>
+            <div class="step-sub">Start location</div>
+          </div>
+        </div>
+        <div class="route-step">
+          <div class="step-icon step-icon--transit"></div>
+          <div class="step-body">
+            <div class="step-type">TRANSIT · NIGHTLIFE</div>
+            <div class="step-name" id="step-transit-name">Tito's Lane, Baga</div>
+            <div class="step-sub" id="step-transit-sub">ETA 28 min · 12.4 km</div>
+          </div>
+        </div>
+        <div class="route-step">
+          <div class="step-icon step-icon--dropoff"></div>
+          <div class="step-body">
+            <div class="step-type">DROPOFF · DESTINATION</div>
+            <div class="step-name" id="step-dropoff-name">Vagator Beach</div>
+            <div class="step-sub">Final stop · pending</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fare Meter -->
+      <div class="section-heading" style="margin-top:12px">FARE METER</div>
+      <div class="fare-grid">
+        <div class="fare-col">
+          <div class="fare-value mono" id="fare-cost">₹2,600</div>
+          <div class="fare-label">SPENT</div>
+          <div class="fare-sub">Low impact</div>
+        </div>
+        <div class="fare-col">
+          <div class="fare-value mono" id="fare-tokens">14.2k</div>
+          <div class="fare-label">AI TOKENS</div>
+          <div class="fare-sub">7,800 in · 6,400 out</div>
+        </div>
+      </div>
+
+      <!-- Event Simulator -->
+      <div class="section-heading" style="margin-top:12px">SIMULATE EVENT</div>
+      <div class="event-buttons">
+        <button class="event-btn event-btn--weather" id="evt-rain" aria-label="Simulate rain event">🌧️ Rain at Baga</button>
+        <button class="event-btn event-btn--crowd" id="evt-crowd" aria-label="Simulate crowd spike">👥 Crowd Spike</button>
+        <button class="event-btn event-btn--delay" id="evt-delay" aria-label="Simulate transport delay">🚌 Bus Delay</button>
+        <button class="event-btn event-btn--group" id="evt-group" aria-label="Simulate friend joining">👤 Friend Joins</button>
+        <button class="event-btn event-btn--energy" id="evt-energy" aria-label="Simulate energy drop">⚡ Energy Drop</button>
+        <button class="event-btn event-btn--budget" id="evt-budget" aria-label="Simulate budget alert">💸 Budget Alert</button>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- BOTTOM REVIEW BAR -->
+  <div class="review-bar" role="status">
+    <span class="review-badge" id="review-count">3</span>
+    <span class="review-text">decisions awaiting review · Agent pipeline active</span>
+    <span class="review-right mono" id="review-latency">Latency: 340ms</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
